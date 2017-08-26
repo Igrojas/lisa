@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Based on code from https://github.com/AlJohri/OpenSubtitles
 # by Al Johri <al.johri@gmail.com>
 
@@ -8,6 +9,7 @@ import sys
 import json
 import re
 import pprint
+import unidecode
 
 from gzip import GzipFile
 from tqdm import tqdm
@@ -97,14 +99,65 @@ class OpensubsData:
                 if self.filter(tmp):
                     conversations.append(tmp)
 
-        return conversations
+        new_conversations = []
+        for i,line in enumerate(conversations):
+            if i > 0 and conversations[i-1] == line:
+                #print line, conversations[i-1]
+                continue
+
+            new_conversations.append(line)
+
+        return new_conversations
+
+    def clean(self, input_str):
+        input_str = input_str.lower()
+        input_str = input_str.replace(u"\"",u"")
+        input_str = input_str.replace(u"ñ",u"ni")
+
+        input_str = input_str.replace(u"¿",u"")
+        input_str = input_str.replace(u"¡",u"")
+        input_str = input_str.replace(u"....",u"")
+        input_str = input_str.replace(u"...",u"")
+        input_str = input_str.replace(u"..",u"")
+        input_str = input_str.replace(u"-",u"")
+        input_str = input_str.replace(u"&",u"")
+        input_str = input_str.replace(u"*",u"")
+
+        input_str = unidecode.unidecode(input_str)
+        if input_str != '' and input_str[-1] == ".":
+            input_str = input_str[:-1]
+
+        return input_str
 
     def getLine(self, sentence):
         line = {}
-        line["text"] = self.tag_re.sub('', sentence).replace('\\\'','\'').strip().lower()
+        sentence = self.clean(sentence)
+        line["text"] = self.tag_re.sub('', sentence).replace('\\\'','\'').strip()
+
         return line
 
     def filter(self, lines):
+        first  = lines["lines"][0]["text"].replace(" ","").replace(".","")
+        second = lines["lines"][1]["text"].replace(" ","").replace(".","")
+
+        if len(set(first)) <= 1 or len(set(second)) <= 1:
+            return False
+
+        if ":" in first or ":" in second:
+            return False
+
+        if "[" in first or "[" in second:
+            return False
+
+        if "{" in first or "{" in second:
+            return False
+
+        if "traduc" in first or "traduc" in second:
+            return False
+
+        if "transla" in first or "transla" in second:
+            return False
+
         # Use the followint to customize filtering of QA pairs
         #
         # startwords = ("what", "how", "when", "why", "where", "do", "did", "is", "are", "can", "could", "would", "will")
