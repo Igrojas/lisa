@@ -177,11 +177,16 @@ class Chatbot:
         # dataset, otherwise, all which cames after the shuffling won't be replicable when
         # reloading the dataset). How to restore the seed after loading ??
         # Also fix seed for random.shuffle (does it works globally for all files ?)
-
+        if self.args.test: 
+            gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.05)
+        else:
+            gpu_options = None
         # Running session
         self.sess = tf.Session(config=tf.ConfigProto(
             allow_soft_placement=True,  # Allows backup device for non GPU-available operations (when forcing GPU)
-            log_device_placement=False)  # Too verbose ?
+            log_device_placement=False,  # Too verbose ?
+            gpu_options=gpu_options
+            )
         )  # TODO: Replace all sess by self.sess (not necessary a good idea) ?
 
         if self.args.debug:
