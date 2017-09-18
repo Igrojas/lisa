@@ -33,6 +33,7 @@ from chatbot.corpus.scotusdata import ScotusData
 from chatbot.corpus.ubuntudata import UbuntuData
 from chatbot.corpus.lightweightdata import LightweightData
 
+from chatbot.normalizator import normalize_spanish as normalize
 
 class Batch:
     """Struct containing batches info
@@ -312,6 +313,8 @@ class TextData:
             self.eosToken = self.word2id['<eos>']
             self.unknownToken = self.word2id['<unknown>']  # Restore special words
 
+        #print(self.id2word)
+
     def filterFromFull(self):
         """ Load the pre-processed full corpus and filter the vocabulary / sentences
         to match the given model options
@@ -584,11 +587,16 @@ class TextData:
             Batch: a batch object containing the sentence, or none if something went wrong
         """
 
+        #print("Before normalization:",sentence)
+        sentence = normalize(sentence)
+        #print("After normalization:",sentence)
+
         if sentence == '':
             return None
 
         # First step: Divide the sentence in token
         tokens = nltk.word_tokenize(sentence)
+        #print(tokens)
         if len(tokens) > self.args.maxLength:
             return None
 
