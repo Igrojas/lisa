@@ -1,6 +1,10 @@
 # darknet
 
-git clone https://github.com/pjreddie/darknet darknet_src --depth 1
-cd darknet_src
+git clone https://github.com/pjreddie/darknet --depth 1
+cd darknet
 make -j 4
-cp libdarknet.so ../darknet
+cd ..
+
+cd data/vision
+wget "https://pjreddie.com/media/files/densenet201.weights" -nc
+wget "https://pjreddie.com/media/files/yolo.weights" -nc
