@@ -106,13 +106,6 @@ net_imagenet = load_net(arg1, arg2, 0)
 arg1 = bytes(data+"/imagenet1k.data", 'ascii')
 meta_imagenet = load_meta(arg1)
 
-def look(image):
-    labels = set()
-    labels.update(look_imagenet(image))
-    labels.update(look_coco(image))
-    return labels
-
-
 def look_imagenet(image):
     global net_imagenet, meta_imagenet
     net = net_imagenet
