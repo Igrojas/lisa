@@ -88,20 +88,22 @@ predict_image.restype = POINTER(c_float)
 network_detect = lib.network_detect
 network_detect.argtypes = [c_void_p, IMAGE, c_float, c_float, c_float, POINTER(BOX), POINTER(POINTER(c_float))]
 
-arg1 = bytes("darknet/yolo.cfg", 'ascii')
-arg2 = bytes("darknet/yolo.weights", 'ascii') 
+data = "data/vision"
+
+arg1 = bytes(data+"/yolo.cfg", 'ascii')
+arg2 = bytes(data+"/yolo.weights", 'ascii') 
 
 net_coco = load_net(arg1, arg2, 0)
 
-arg1 = bytes("darknet/coco.data", 'ascii')
+arg1 = bytes(data+"/coco.data", 'ascii')
 meta_coco = load_meta(arg1)
 
-arg1 = bytes("darknet/densenet201.cfg", 'ascii')
-arg2 = bytes("darknet/densenet201.weights", 'ascii') 
+arg1 = bytes(data+"/densenet201.cfg", 'ascii')
+arg2 = bytes(data+"/densenet201.weights", 'ascii') 
 
 net_imagenet = load_net(arg1, arg2, 0)
 
-arg1 = bytes("darknet/imagenet1k.data", 'ascii')
+arg1 = bytes(data+"/imagenet1k.data", 'ascii')
 meta_imagenet = load_meta(arg1)
 
 def look(image):
