@@ -9,11 +9,10 @@ print("Iniciando chatbot..")
 from chatbot.chatbot import Chatbot
 
 chatbot = Chatbot()
-chatbot.main(["--rootDir",".","--test", "daemon", "--modelTag", "spanish-2", "--keepAll"])
+chatbot.main(["--rootDir",".","--test", "daemon", "--modelTag", "spanish", "--keepAll"])
 
 from vision import look
-from notification import notify
-
+from ui import say
 
 recent_value = ""
 while True:
@@ -35,7 +34,7 @@ while True:
 
                 if filename != None:
                     for elem in look(filename):
-                        notify("Puedo ver "+elem)
+                        say("Puedo ver "+elem)
                     os.remove(filename)
 
         else:
@@ -43,6 +42,6 @@ while True:
                 question = str(recent_value)
                 print("Pregunta: %s" % str(question))
                 answer = chatbot.daemonPredict(question)
-                notify("Respuesta: %s" % str(answer))
+                say("Respuesta: %s" % str(answer))
 
     time.sleep(1)
